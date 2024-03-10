@@ -1,0 +1,5 @@
+name: thing
+include:
+  .
+depend:
+  standard-library
