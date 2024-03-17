@@ -49,6 +49,9 @@ data _⊢_ : List Set → List Set → Set1 where
   LE : {A B : Set} {Γ Δ : List Set} → (n : Nat) → (pick n Γ) ⊢ Δ → Γ ⊢ Δ
   RE : {A B : Set} {Γ Δ : List Set} → (n : Nat) → Γ ⊢ (pick n Δ) → Γ ⊢ Δ
 
+-- TODO: Explicit Weaking, Explicit Contraction, Cut
+
+-- Examples:
 
 s : {A B C : Set} → [] ⊢ [ (A Implies B Implies C) Implies (A Implies B) Implies A Implies C ]
 s = R→ (R→ (R→ (LE 1 (L→ I (LE 2 (L→ (LE 1 I) (L→ I I)))))))
@@ -59,24 +62,24 @@ k = R→ (R→ (LE 1 I))
 i : {A : Set} → [] ⊢ [ A Implies A ]
 i = R→ I
 
-dem1 : {A B : Set} → [] ⊢ [ (Not (A Or B)) Implies (Not A And Not B) ]
-dem1 = R→ (L¬ (R∨ (RE 2 (R∧ (R¬ I) (R¬ (RE 1 I))))))
+decurry : { A B C : Set } → [ A Implies B Implies C ] ⊢ [ (A And B) Implies C ]
+decurry = R→ (L∧ (LE 2 (L→ I (L→ (LE 1 I) I))))
 
-dem2 : {A B : Set} → [] ⊢ [ (Not A And Not B) Implies Not (A Or B) ]
-dem2 = R→ (L∧ (R¬ (L∨ (LE 1 (L¬ I)) (LE 2 (L¬ I)))))
+dem1 : {A B : Set} → [ Not (A Or B) ] ⊢ [ Not A And Not B ]
+dem1 = L¬ (R∨ (RE 2 (R∧ (R¬ I) (R¬ (RE 1 I)))))
 
-dem3 : {A B : Set} → [] ⊢ [ (Not A Or Not B) Implies Not (A And B) ]
-dem3 = R→ (R¬ (L∧ (LE 2 (L∨ (L¬ I) (L¬ (LE 1 I))))))
+dem2 : {A B : Set} → [ Not A And Not B ] ⊢ [ Not (A Or B) ]
+dem2 = L∧ (R¬ (L∨ (LE 1 (L¬ I)) (LE 2 (L¬ I))))
+
+dem3 : {A B : Set} → [ Not A Or Not B ] ⊢ [ Not (A And B) ]
+dem3 = R¬ (L∧ (LE 2 (L∨ (L¬ I) (L¬ (LE 1 I)))))
 
 tnd : {A : Set} → [] ⊢ [ A Or (Not A) ]
 tnd = R∨ (RE 1 (R¬ I))
 
-dne : {A : Set} → [] ⊢ [ (Not (Not A)) Implies A ]
-dne = R→ (L¬ (R¬ I))
+dne : {A : Set} → [ Not (Not A) ] ⊢ [ A ]
+dne = L¬ (R¬ I)
 
-
-dem4 : {A B : Set} → [] ⊢ [ Not (A And B) Implies (Not A Or Not B) ]
-dem4 = R→ (R∨ (L¬ (R∧ (RE 1 (R¬ I)) (RE 2 (R¬ I)))))
-
-
+dem4 : {A B : Set} → [ Not (A And B) ] ⊢ [  Not A Or Not B ]
+dem4 = R∨ (L¬ (R∧ (RE 1 (R¬ I)) (RE 2 (R¬ I))))
 
