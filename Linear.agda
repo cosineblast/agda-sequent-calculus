@@ -66,6 +66,42 @@ data _⊢_ : List Set → List Set → Set₁ where
   LE : {A B : Set} {Γ Δ : List Set} → (n : Nat) → (pick n Γ) ⊢ Δ → Γ ⊢ Δ
   RE : {A B : Set} {Γ Δ : List Set} → (n : Nat) → Γ ⊢ (pick n Δ) → Γ ⊢ Δ
 
+-- Examples:
 
--- Examples
+-- Linear Implication
+
+_⊸_ : Set → Set → Set
+A ⊸ B = (Not A) Or B
+infixr 20 _⊸_
+
+R⊸ : {A B : Set} {Γ Δ : List Set} → (A ∷ Γ) ⊢ (B ∷ Δ) → Γ ⊢ ((A ⊸ B) ∷ Δ)
+R⊸ p = R⅋ (R¬ p)
+
+L⊸ : {A B : Set} {Γ Δ : List Set} (n m : Nat) → (Not A ∷ take n Γ) ⊢ take m Δ → (B ∷ drop n Γ) ⊢ drop m Δ → ((A ⊸ B) ∷ Γ) ⊢ Δ
+L⊸ n m p1 p2 = L⅋ n m p1 p2
+
+
+modpon : {A B : Set} → (A ⊸ B ∷ A ∷ []) ⊢ [ B ]
+modpon = L⊸ 1 0 (L¬ I) I
+
+com× : {A B : Set} → [] ⊢ [(A Times B) ⊸ (B Times A)]
+com× = R⊸ (L× (LE 1 (R× 1 0 I I)))
+
+I× : {A B : Set} → [] ⊢ [ A ⊸ B ⊸ (A Times B) ]
+I× = R⊸ (R⊸ (LE 1 (R× 1 0 I I)))
+
+fst& : {A B : Set} → [ A And B ] ⊢ [ A ]
+fst& = L&1 I
+
+snd& : {A B : Set} → [ A And B ] ⊢ [ B ]
+snd& = L&2 I
+
+left+ : {A B : Set} → [ A ] ⊢ [ A Plus B ]
+left+ = R+1 I
+
+right+ : {A B : Set} → [ B ] ⊢ [ A Plus B ]
+right+ = R+2 I
+
+match+ : {A B C : Set} → (A Plus B ∷ ((A ⊸ C) And (B ⊸ C)) ∷ []) ⊢ [ C ]
+match+ = L+ (LE 1 (L&1 modpon)) (LE 1 (L&2 modpon))
 
