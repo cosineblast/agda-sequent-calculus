@@ -35,15 +35,17 @@ data _⊢_ : List Set → List Set → Set₁ where
   L× : {A B : Set} {Γ Δ : List Set} → ((A ∷ B ∷ Γ) ⊢ Δ) → ((A Times B) ∷ Γ) ⊢ Δ
   R⅋ : {A B : Set} {Γ Δ : List Set} → Γ ⊢ (A ∷ B ∷ Δ) → Γ ⊢ ((A Or B) ∷ Δ)
 
-  R× : {A B : Set} {Γ₁ Γ₂ Δ₁ Δ₂ : List Set} → Γ₁ ⊢ (A ∷ Δ₁) → Γ₂ ⊢ (B ∷ Δ₂) → (Γ₁ ++ Γ₂) ⊢ ((A Times B) ∷ (Δ₁ ++ Δ₂))
-  L⅋ : {A B : Set} {Γ₁ Γ₂ Δ₁ Δ₂ : List Set} → (A ∷ Γ₁) ⊢ Δ₁ → (B ∷ Γ₂) ⊢ Δ₂ → ((A Or B) ∷ (Γ₁ ++ Γ₂)) ⊢ (Δ₁ ++ Δ₂)
+  R× : {A B : Set} {Γ Δ : List Set} (n m : Nat) → (take n Γ)  ⊢ (A ∷ (take m Δ)) → (drop n Γ) ⊢ (B ∷ (drop m Δ)) → Γ ⊢ ((A Times B) ∷ Δ)
+  L⅋ : {A B : Set} {Γ Δ : List Set} (n m : Nat) → (A ∷ take n Γ) ⊢ take m Δ → (B ∷ drop n Γ) ⊢ drop m Δ → ((A Or B) ∷ Γ) ⊢ Δ
 
   -- Additive Rules
-  L& : {A B : Set} {Γ Δ : List Set} → ((A ∷ Γ) ⊢ Δ) → ((A And B) ∷ Γ) ⊢ Δ
-  R+ : {A B : Set} {Γ Δ : List Set} → Γ ⊢ (A ∷ Δ) → Γ ⊢ ((A Plus B) ∷ Δ)
+  L&1 : {A B : Set} {Γ Δ : List Set} → ((A ∷ Γ) ⊢ Δ) → ((A And B) ∷ Γ) ⊢ Δ
+  L&2 : {A B : Set} {Γ Δ : List Set} → ((B ∷ Γ) ⊢ Δ) → ((A And B) ∷ Γ) ⊢ Δ
+  R+1 : {A B : Set} {Γ Δ : List Set} → Γ ⊢ (A ∷ Δ) → Γ ⊢ ((A Plus B) ∷ Δ)
+  R+2 : {A B : Set} {Γ Δ : List Set} → Γ ⊢ (B ∷ Δ) → Γ ⊢ ((A Plus B) ∷ Δ)
 
   R& : {A B : Set} {Γ Δ : List Set} → Γ ⊢ (A ∷ Δ) → Γ ⊢ (B ∷ Δ) → Γ ⊢ ((A And B) ∷ Δ)
-  L+ : {A B : Set} {Γ Δ : List Set} → (A ∷ Γ) ⊢ Δ → (B ∷ Γ) ⊢ Δ → ((A Or B) ∷ Γ) ⊢ Δ
+  L+ : {A B : Set} {Γ Δ : List Set} → (A ∷ Γ) ⊢ Δ → (B ∷ Γ) ⊢ Δ → ((A Plus B) ∷ Γ) ⊢ Δ
 
   -- Negation Rules
   L¬ : {A : Set} {Γ Δ : List Set} → Γ ⊢ (A ∷ Δ) → (Not A ∷ Γ) ⊢ Δ
