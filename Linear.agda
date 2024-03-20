@@ -4,6 +4,7 @@ open import Agda.Builtin.Nat
 open import Data.List
 open import Data.Bool
 open import Agda.Primitive
+open import Data.Product using (_×_ ; _,_; proj₁; proj₂)
 
 data _And_ (A : Set) (B : Set) : Set where
 data _Or_ (A : Set) (B : Set) : Set where
@@ -13,6 +14,11 @@ data _Plus_ (A : Set) (B : Set) : Set where
 data Not (A : Set) : Set where
 data OfCourse (A : Set) : Set where
 data WhyNot (A : Set) : Set where
+
+data One : Set where
+data Zero : Set where
+data Top : Set where
+data Bottom : Set where
 
 -- with the elements of A, but the element at index got moved
 -- to its start. If n >= len(A), picks the last element
@@ -48,6 +54,12 @@ data _⊢_ : List Set → List Set → Set₁ where
     → (A ∷ take n Γ) ⊢ take m Δ → (B ∷ drop n Γ) ⊢ drop m Δ
     → ((A Or B) ∷ Γ) ⊢ Δ
 
+  W1 : {Γ Δ : List Set} → Γ ⊢ Δ → (One ∷ Γ) ⊢ Δ
+  T1 : [] ⊢ [ One ]
+
+  W0 : {Γ Δ : List Set} → Γ ⊢ Δ → Γ ⊢ (Zero ∷ Δ)
+  F0 : [ Zero ] ⊢ []
+
   -- Additive Rules
   L&1 : {A B : Set} {Γ Δ : List Set}
     → ((A ∷ Γ) ⊢ Δ)
@@ -72,6 +84,9 @@ data _⊢_ : List Set → List Set → Set₁ where
   L+ : {A B : Set} {Γ Δ : List Set}
     → (A ∷ Γ) ⊢ Δ → (B ∷ Γ) ⊢ Δ
     → ((A Plus B) ∷ Γ) ⊢ Δ
+
+  A⊥  : {Γ Δ : List Set} → (Bottom ∷ Γ) ⊢ Δ
+  A⊤  : {Γ Δ : List Set} → Γ ⊢ (Top ∷ Δ)
 
   -- Negation Rules
   L¬ : {A : Set} {Γ Δ : List Set}
