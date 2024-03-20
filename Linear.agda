@@ -178,3 +178,52 @@ right+ = R+2 I
 match+ : {A B C : Set} → (A Plus B ∷ ((A ⊸ C) And (B ⊸ C)) ∷ []) ⊢ [ C ]
 match+ = L+ (LE 1 (L&1 modpon)) (LE 1 (L&2 modpon))
 
+-- Remarkable Formulas from Wikipedia
+_⟛_ : List Set → List Set → Set₁
+x ⟛ y = (x ⊢ y) × (y ⊢ x)
+
+dist×+l : {A B C : Set} → [ A Times (B Plus C) ] ⟛ [ (A Times B) Plus (A Times C) ]
+dist×+l =
+  L× (LE 1 (L+ (LE 1 (R+1 (R× 1 0 I I))) (R+2 (LE 1 (R× 1 0 I I)))))
+  ,
+  L+ (L× (R× 1 0 I (R+1 I))) (L× (R× 1 0 I (R+2 I)))
+
+dist⅋&l : {A B C : Set} → [ A Or (B And C) ] ⟛ [ (A Or B) And (A Or C) ]
+dist⅋&l =
+  R& (R⅋ (L⅋ 0 1 I (L&1 I))) (R⅋ (L⅋ 0 1 I (L&2 I)))
+  ,
+  R⅋ (RE 1 (R& (L&1 (RE 1 (L⅋ 0 1 I I))) (L&2 (RE 1 (L⅋ 0 1 I I)))))
+
+dist⊸&l : {A B C : Set} → [ A ⊸ (B And C) ] ⟛ [ (A ⊸ B) And (A ⊸ C) ]
+dist⊸&l = (proj₁ dist⅋&l) , (proj₂ dist⅋&l)
+
+
+
+-- could use cut
+law-!&× : {A B : Set} → [ OfCourse (A And B) ] ⟛ [ (OfCourse A) Times (OfCourse B) ]
+law-!&× =
+  C! (R× 1 0 (R! (D! (L&1 I))) (R! (D! (L&2 I))))
+  ,
+  L× (R! (R& (LE 1 (W! (D! I))) (W! (D! I))))
+
+law-?+⅋ : {A B : Set} → [ WhyNot (A Plus B) ] ⟛ [ (WhyNot A) Or (WhyNot B) ]
+law-?+⅋ =
+  R⅋ (L? (L+ (RE 1 (W? (D? I))) (W? (D? I))))
+  ,
+  C? (L⅋ 0 1 (L? (D? (R+1 I))) (L? (D? (R+2 I))))
+
+law-n?!n : {A : Set} → [ Not (WhyNot A) ] ⟛ [ OfCourse (Not A) ]
+law-n?!n =
+  L¬ (RE 1 (R! (R¬ (D? I))))
+  ,
+  R¬ (L? (LE 1 (D! (L¬ I))))
+
+
+-- A, Not A -o 1 |- A v A
+
+what : {A : Set} →  (A ∷ [ Not A ⊸ One ])  ⊢ [ A Or A ]
+what = LE 1 (R⅋ (L⊸ 0 1 (L¬ (R¬ I)) (W1 I)))
+
+
+
+
